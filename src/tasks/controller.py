@@ -1,11 +1,12 @@
 from src.tasks.dtos import TaskDTO
 from sqlalchemy.orm import Session
 from src.tasks.models import TaskModel
+from src.user.models import UserModel
 from fastapi import HTTPException
 
-def create_task(body: TaskDTO, db: Session):
+def create_task(body: TaskDTO, db: Session, user: UserModel):
     data = body.model_dump()
-    new_task = TaskModel(title=data['title'], description=data['description'], is_completed=data['is_completed'])
+    new_task = TaskModel(title=data['title'], description=data['description'], is_completed=data['is_completed'], user_id = user.id)
     
     db.add(new_task)
     db.commit()
@@ -14,19 +15,19 @@ def create_task(body: TaskDTO, db: Session):
     # return {"status": "Task created successfully...", "data": new_task}
     return new_task
 
-def get_all_tasks(db: Session):
-    tasks = db.query(TaskModel).all()
+def get_all_tasks(db: Session, user: UserModel):
+    tasks = db.query(TaskModel).filter(TaskModel.user_id == user.id)
     # return {"status": "Success", "data": tasks}
     return tasks
 
-def get_task_by_id(task_id: int, db: Session):
-    task = db.query(TaskModel).get(task_id)
+def get_task_by_id(task_id: int, db: Session, user: UserModel):
+    task = db.query(TaskModel).filter(TaskModel.user_id == user.id, TaskModel.id == task_id).first()
     if not task:
         raise HTTPException(404, detail="Task id is invalid")
     return task
 
-def delete_task_by_id(task_id: int, db: Session):
-    task = db.query(TaskModel).get(task_id)
+def delete_task_by_id(task_id: int, db: Session, user: UserModel):
+    task = db.query(TaskModel).filter(TaskModel.user_id == user.id, TaskModel.id == task_id).first()
     if not task:
         raise HTTPException(404, detail="Task id is invalid")
     
@@ -35,8 +36,8 @@ def delete_task_by_id(task_id: int, db: Session):
     
     return None
 
-def update_task(task_id: int, body: TaskDTO, db: Session):
-    task = db.query(TaskModel).get(task_id)
+def update_task(task_id: int, body: TaskDTO, db: Session, user: UserModel):
+    task = db.query(TaskModel).filter(TaskModel.user_id == user.id, TaskModel.id == task_id).first()
     if not task:
         raise HTTPException(404, detail="Task id is invalid")
     

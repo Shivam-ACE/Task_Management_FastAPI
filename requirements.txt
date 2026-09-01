@@ -1,4 +1,15 @@
 fastapi[standard]
+
 pydantic_settings
+
 SQLAlchemy
+
 psycopg2-binary
+
+pyjwt
+
+pwdlib[argon2]
+
+alembic
+
+fastapi-mail
