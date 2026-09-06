@@ -13,3 +13,5 @@ pwdlib[argon2]
 alembic
 
 fastapi-mail
+
+uvicorn
