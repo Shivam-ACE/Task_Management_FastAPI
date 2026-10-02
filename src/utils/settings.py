@@ -6,7 +6,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str
     EXP_TIME: int
+    
     MAIL_USERNAME: str
     MAIL_PASSWORD: str
+    
+    REDIS_URL: str
     
 settings = Settings()
